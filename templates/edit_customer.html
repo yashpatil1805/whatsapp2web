@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Customer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Edit Customer</h2>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Name" value="{{ customer.name }}" required>
+        <input type="email" name="email" placeholder="Email" value="{{ customer.email }}">
+        <input type="text" name="phone_number" placeholder="Phone Number" value="{{ customer.phone_number }}">
+        <input type="text" name="address" placeholder="Address" value="{{ customer.address }}">
+        <input type="text" name="landmark" placeholder="Landmark" value="{{ customer.landmark }}">
+        <input type="text" name="pincode" placeholder="Pincode" value="{{ customer.pincode }}">
+        <button type="submit">Update Customer</button>
+    </form>
+    <a href="{{ url_for('customers') }}">Back to Customers</a>
+</div>
+</body>
+</html>

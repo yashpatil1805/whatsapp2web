@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Products | Admin Panel</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+
+   .header {
+    display: flex;
+    justify-content: center;      /* Centers the title */
+    align-items: center;
+    position: relative;
+    background: #333;
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.header .logout {
+    position: absolute;
+    right: 20px;                 /* Keeps logout at right corner */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+    .dashboard-btn-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .dashboard-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .dashboard-btn:hover { background-color: #45a049; }
+
+    .container { max-width: 1200px; margin: auto; padding: 20px; }
+    h3 { text-align: center; margin-bottom: 20px; }
+
+    /* Add Product Form */
+    form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    form input, form button {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+    form button {
+        background-color: #2196F3;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    form button:hover { background-color: #0b7dda; }
+
+    /* Products Table */
+    .products-table-container { overflow-x: auto; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+    table th, table td {
+        padding: 12px 10px;
+        text-align: left;
+        border-bottom: 1px solid #444;
+    }
+    table th { background-color: #1f1f1f; }
+    table td { background-color: rgba(255,255,255,0.05); }
+    table tr:hover td { background-color: rgba(255,255,255,0.1); }
+
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .delete-btn {
+        background-color: #ff4d4d;
+        color: white;
+    }
+    .delete-btn:hover { background-color: #e60000; transform: scale(1.05); }
+
+    .edit-btn {
+        background-color: #ffc107;
+        color: black;
+    }
+    .edit-btn:hover { background-color: #e6b800; transform: scale(1.05); }
+
+    @media (max-width: 768px) {
+        table, thead, tbody, th, td, tr { display: block; }
+        table tr { margin-bottom: 15px; border-bottom: 1px solid #555; }
+        table td {
+            padding-left: 50%;
+            position: relative;
+        }
+        table td::before {
+            position: absolute;
+            left: 15px;
+            width: 45%;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+        table td:nth-of-type(1)::before { content: "ID"; }
+        table td:nth-of-type(2)::before { content: "Product No"; }
+        table td:nth-of-type(3)::before { content: "Name"; }
+        table td:nth-of-type(4)::before { content: "Price"; }
+        table td:nth-of-type(5)::before { content: "Size"; }
+        table td:nth-of-type(6)::before { content: "Description"; }
+        table td:nth-of-type(7)::before { content: "Actions"; }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Manage Products</h2>
+    <a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="dashboard-btn-container">
+    <a href="{{ url_for('dashboard') }}" class="dashboard-btn"><i class="fas fa-home"></i> Back to Dashboard</a>
+</div>
+
+<div class="container">
+
+    <!-- Add Product Form -->
+    <form action="{{ url_for('add_product') }}" method="POST">
+        <input type="text" name="product_no" placeholder="Product No" required>
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="number" step="0.01" name="price" placeholder="Price" required>
+        <input type="text" name="size" placeholder="Size" required>
+        <input type="text" name="description" placeholder="Description">
+        <button type="submit"><i class="fas fa-plus-circle"></i> Add Product</button>
+    </form>
+
+    <!-- Products Table -->
+    <div class="products-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product No</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Size</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.productid }}</td>
+                    <td>{{ product.product_no }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>₹{{ product.price }}</td>
+                    <td>{{ product.size }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>
+                        <a href="{{ url_for('delete_product', productid=product.productid) }}" 
+                           class="action-btn delete-btn"
+                           onclick="return confirm('Are you sure you want to delete {{ product.name }}?');">
+                           <i class="fas fa-trash"></i> Delete
+                        </a>
+                        <a href="{{ url_for('edit_product', productid=product.productid) }}" 
+                           class="action-btn edit-btn">
+                           <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align:center; color:#888;">No products found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

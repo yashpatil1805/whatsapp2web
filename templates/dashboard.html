@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Link to shared admin CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ================= Header Section ================= -->
+    <header class="header">
+        <a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <h2>Welcome Admin</h2>
+    </header>
+
+    <!-- ================= Main Modules Section ================= -->
+    <main class="main-modules">
+
+        <!-- Module Card: Manage Customers -->
+        <div class="module-card">
+            <a href="{{ url_for('customers') }}">
+                <i class="fas fa-users fa-2x"></i>
+                <span>Manage Customers</span>
+            </a>
+        </div>
+
+        <!-- Module Card: Manage Orders -->
+        <div class="module-card">
+            <a href="{{ url_for('orders') }}">
+                <i class="fas fa-shopping-cart fa-2x"></i>
+                <span>Manage Orders</span>
+            </a>
+        </div>
+
+        <!-- Module Card: Manage Products -->
+        <div class="module-card">
+            <a href="{{ url_for('products') }}">
+                <i class="fas fa-box fa-2x"></i>
+                <span>Manage Products</span>
+            </a>
+        </div>
+
+    </main>
+
+</body>
+</html>

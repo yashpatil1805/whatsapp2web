@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Order</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Edit Order #{{ order.orderid }}</h2>
+    <form method="POST">
+        <label>Customer:</label>
+        <select name="customerid" required>
+            {% for customer in customers %}
+                <option value="{{ customer.customerid }}" {% if customer.customerid == order.customerid %}selected{% endif %}>
+                    {{ customer.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <h3>Order Items</h3>
+        <div id="items-container">
+            {% for item in items %}
+            <div class="item-row">
+                <select name="productid[]">
+                    {% for product in products %}
+                        <option value="{{ product.productid }}" {% if product.productid == item.productid %}selected{% endif %}>
+                            {{ product.name }} ({{ product.size }}) - ₹{{ product.price }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="quantity[]" value="{{ item.quantity }}" min="1">
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Update Order</button>
+    </form>
+    <a href="{{ url_for('orders') }}">Back to Orders</a>
+</div>
+</body>
+</html>

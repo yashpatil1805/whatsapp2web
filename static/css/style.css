@@ -1,0 +1,112 @@
+/* General body settings */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("../images/3430318.jpg") no-repeat center center/cover;
+}
+
+/* Login wrapper */
+.wrapper {
+  width: 400px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  border-radius: 15px;
+  color: #fff;
+}
+
+/* Login form elements */
+.wrapper h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.input-field {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.input-field label {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+.forget {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.forget p {
+  color: #fff; /* Remember me text */
+}
+
+.forget a {
+  color: #FFD700; /* Forget password link color */
+  text-decoration: none;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #4CAF50;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+/* Dashboard styling */
+.dashboard-top {
+  position: relative;
+  text-align: center;
+  background-color: #333;
+  padding: 20px 0;
+}
+
+.dashboard-top h1 {
+  margin: 0;
+  color: white;
+}
+
+.dashboard-top .logout-btn {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Dashboard content */
+.content {
+  padding: 20px;
+  text-align: center;
+  color: #333;
+  font-size: 18px;
+}

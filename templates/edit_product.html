@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Product</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Edit Product</h2>
+    <form method="POST">
+        <input type="text" name="product_no" placeholder="Product No" value="{{ product.product_no }}" required>
+        <input type="text" name="name" placeholder="Name" value="{{ product.name }}" required>
+        <input type="number" step="0.01" name="price" placeholder="Price" value="{{ product.price }}" required>
+        <input type="text" name="size" placeholder="Size" value="{{ product.size }}" required>
+        <input type="text" name="description" placeholder="Description" value="{{ product.description }}">
+        <button type="submit">Update Product</button>
+    </form>
+    <a href="{{ url_for('products') }}">Back to Products</a>
+</div>
+</body>
+</html>

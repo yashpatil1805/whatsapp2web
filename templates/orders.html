@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Orders | Admin Panel</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        background-color: #1f1f1f;
+    }
+
+    /* Header */
+    header.header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background-color: rgba(31,31,31,0.95);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        z-index: 10;
+    }
+
+    header.header h2 {
+        margin: 0;
+        font-size: 28px;
+        text-align: center;
+        flex: 1;
+    }
+
+    header.header .logout {
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 8px 12px;
+        background-color: #e60000;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+    header.header .logout:hover {
+        background-color: #ff4d4d;
+    }
+
+    .dashboard-btn-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .dashboard-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 16px;
+        text-decoration: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .dashboard-btn:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    /* Add Order Form */
+    .order-form {
+        margin: 20px auto;
+        padding: 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 12px;
+        backdrop-filter: blur(8px);
+        max-width: 600px;
+    }
+
+    .order-form h3 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .product-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .product-row select, .product-row input {
+        padding: 8px;
+        border-radius: 6px;
+        border: none;
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .add-btn, .submit-btn {
+        margin-top: 10px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .add-btn { background-color: #4CAF50; }
+    .submit-btn { background-color: #2196F3; }
+
+    /* Orders Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 40px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    table th, table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+        vertical-align: top;
+    }
+
+    table th {
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    table td select {
+        padding: 4px;
+        border-radius: 4px;
+        border: none;
+        font-weight: bold;
+        color: #fff;
+        background-color: #333;
+    }
+
+    .status-Accepted { background-color: #2196F3; color: #fff; padding: 4px 8px; border-radius: 4px; }
+    .status-Shipped { background-color: #4CAF50; color: #fff; padding: 4px 8px; border-radius: 4px; }
+    .status-Delivered { background-color: #2e7d32; color: #fff; padding: 4px 8px; border-radius: 4px; }
+
+    .delete-btn {
+        background-color: #ff4d4d;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        margin-right: 5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .delete-btn:hover { background-color: #e60000; }
+
+    .edit-btn {
+        background-color: #ffc107;
+        color: black;
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .edit-btn:hover { background-color: #e6b800; }
+
+    .remove-btn {
+        background: #ff4d4d;
+        border: none;
+        border-radius: 50%;
+        color: #fff;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+    }
+</style>
+</head>
+<body>
+
+<header class="header">
+    <h2>Manage Orders</h2>
+    <a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</header>
+
+<div class="container">
+
+    <!-- Back to Dashboard -->
+    <div class="dashboard-btn-container">
+        <a href="{{ url_for('dashboard') }}" class="dashboard-btn">← Back to Dashboard</a>
+    </div>
+
+    <!-- Create New Order Form -->
+    <form action="{{ url_for('add_order') }}" method="POST" class="order-form">
+        <h3>Create New Order</h3>
+
+        <label for="customerid">Select Customer</label>
+        <select name="customerid" id="customerid" required>
+            <option value="">Select Customer</option>
+            {% for customer in customers %}
+                <option value="{{ customer.customerid }}">{{ customer.name }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="product-list">
+            <div class="product-row">
+                <select name="productid[]" required>
+                    <option value="">Select Product</option>
+                    {% for product in products %}
+                        <option value="{{ product.productid }}">{{ product.name }} ({{ product.size }}) - ₹{{ product.price }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="quantity[]" min="1" placeholder="Quantity" required>
+                <button type="button" class="remove-btn" onclick="removeRow(this)" style="visibility:hidden;">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <button type="button" class="add-btn" onclick="addProductRow()">
+            <i class="fas fa-plus"></i> Add Another Product
+        </button>
+
+        <button type="submit" class="submit-btn">
+            <i class="fas fa-check"></i> Create Order
+        </button>
+    </form>
+
+    <!-- Orders Table -->
+    <h3 style="text-align:center; margin-top: 40px;">All Orders</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Products</th>
+                <th>Total (₹)</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if orders %}
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.orderid }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>
+                        {% for item in order.order_items %}
+                            {{ item.name }} ({{ item.size }}) × {{ item.quantity }} <br>
+                        {% endfor %}
+                    </td>
+                    <td>{{ order.total_amount }}</td>
+                    <td>
+                        <form action="{{ url_for('update_order_status', order_id=order.orderid) }}" method="POST">
+                            <select name="status" onchange="this.form.submit()" class="status-{{ order.status }}">
+                                <option value="Accepted" {% if order.status == 'Accepted' %}selected{% endif %}>Accepted</option>
+                                <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('delete_order', order_id=order.orderid) }}" class="delete-btn">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                        <a href="{{ url_for('edit_order', order_id=order.orderid) }}" class="edit-btn">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" style="text-align:center; color:#ccc;">No orders found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+function addProductRow() {
+    const container = document.getElementById('product-list');
+    const lastRow = container.lastElementChild;
+    const newRow = lastRow.cloneNode(true);
+
+    newRow.querySelector('select[name="productid[]"]').value = '';
+    newRow.querySelector('input[name="quantity[]"]').value = '';
+    newRow.querySelector('.remove-btn').style.visibility = 'visible';
+
+    container.appendChild(newRow);
+}
+
+function removeRow(btn) {
+    const container = document.getElementById('product-list');
+    if (container.children.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        alert("At least one product is required.");
+    }
+}
+</script>
+
+</body>
+</html>

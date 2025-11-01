@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Customers | Admin Panel</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    /* Back to Dashboard Button */
+    .dashboard-btn-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .dashboard-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 16px;
+        text-decoration: none;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .dashboard-btn:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+    }
+
+    /* Add Customer Form */
+    .customer-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .customer-form input, .customer-form button {
+        padding: 12px;
+        border-radius: 6px;
+        border: none;
+        font-size: 15px;
+    }
+
+    .customer-form button {
+        background-color: #4CAF50;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .customer-form button:hover {
+        background-color: #45a049;
+    }
+
+    /* Customers Grid */
+    .customers-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .customer-card {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 12px;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: 0.3s;
+    }
+
+    .customer-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.15);
+    }
+
+    .customer-details div {
+        margin: 5px 0;
+    }
+
+    .action-btn {
+        margin-top: 15px;
+        text-align: center;
+        padding: 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: inline-block;
+        width: 48%;
+    }
+
+    .delete-btn {
+        background-color: #ff4d4d;
+        color: white;
+        margin-right: 2%;
+    }
+
+    .delete-btn:hover {
+        background-color: #e60000;
+        transform: scale(1.05);
+    }
+
+    .edit-btn {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .edit-btn:hover {
+        background-color: #e6b800;
+        transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .customer-form {
+            grid-template-columns: 1fr;
+        }
+        .action-btn {
+            width: 100%;
+            margin-right: 0;
+            margin-top: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header class="header">
+    <h2>Manage Customers</h2>
+    <a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</header>
+
+<div class="container">
+
+    <!-- Back to Dashboard -->
+    <div class="dashboard-btn-container">
+        <a href="{{ url_for('dashboard') }}" class="dashboard-btn"><i class="fas fa-home"></i> Back to Dashboard</a>
+    </div>
+
+    <!-- Add Customer Form -->
+    <form action="{{ url_for('add_customer') }}" method="POST" class="customer-form">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="address" placeholder="Address" required>
+        <input type="text" name="landmark" placeholder="Landmark">
+        <input type="text" name="pincode" placeholder="Pincode" required>
+        <input type="text" name="phone_number" placeholder="Phone Number" required>
+        <button type="submit"><i class="fas fa-plus"></i> Add Customer</button>
+    </form>
+
+    <!-- Customer Cards -->
+    <div class="customers-container">
+        {% for customer in customers %}
+        <div class="customer-card">
+            <div class="customer-details">
+                <div><strong>#{{ loop.index }} (ID: {{ customer.customerid }})</strong></div>
+                <div><strong>Name:</strong> {{ customer.name }}</div>
+                <div><strong>Email:</strong> {{ customer.email }}</div>
+                <div><strong>Phone:</strong> {{ customer.phone_number }}</div>
+                <div><strong>Address:</strong> {{ customer.address }}{% if customer.landmark %}, {{ customer.landmark }}{% endif %}, {{ customer.pincode }}</div>
+            </div>
+            <div>
+                <a href="{{ url_for('delete_customer', customerid=customer.customerid) }}" 
+                   onclick="return confirm('Are you sure you want to delete {{ customer.name }}?');"
+                   class="action-btn delete-btn"><i class="fas fa-trash"></i> Delete</a>
+                <a href="{{ url_for('edit_customer', customerid=customer.customerid) }}" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>
